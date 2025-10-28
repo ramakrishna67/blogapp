@@ -11,7 +11,7 @@ interface BlogCardProps {
   title: string;
   slug: string;
   content: string;
-  category: Array<string>;
+  category: string[];
   excerpt: string;
 }
 

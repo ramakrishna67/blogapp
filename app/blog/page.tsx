@@ -10,9 +10,10 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { useState } from "react";
-import { allPosts } from "@/data/posts";
+import { trpc } from "@/lib/trpc/client";
 
 export default function BlogPage() {
+  const { data: allPosts = [], isLoading } = trpc.post.getAll.useQuery();
   const [currPage, setCurrPage] = useState(1);
   const postsPerPage = 3;
   const totalPages = Math.ceil(allPosts.length / postsPerPage);
@@ -31,7 +32,10 @@ export default function BlogPage() {
           <h1 className="text-2xl px-6 pt-2 font-bold">Recent Posts</h1>
           <div className="mx-auto grid md:grid-cols-3 gap-6 max-w-6xl p-4">
             {allPosts.slice(0, 3).map((post) => (
-              <BlogCard key={post.id} post={post} />
+              <BlogCard
+                key={post.id}
+                post={{ ...post, category: post.category ?? [] }}
+              />
             ))}
           </div>
         </div>
@@ -39,7 +43,10 @@ export default function BlogPage() {
           <h1 className="text-2xl px-6 pt-2 font-bold">All Posts</h1>
           <div className="mx-auto grid md:grid-cols-3 gap-6 max-w-6xl p-4">
             {currentPosts.map((post) => (
-              <BlogCard key={post.id} post={post} />
+              <BlogCard
+                key={post.id}
+                post={{ ...post, category: post.category ?? [] }}
+              />
             ))}
           </div>
           <Pagination>
