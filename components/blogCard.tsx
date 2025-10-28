@@ -6,20 +6,41 @@ import {
   CardFooter,
 } from "@/components/ui/card";
 
-export function BlogCard() {
+interface BlogCardProps {
+  id: number;
+  title: string;
+  slug: string;
+  content: string;
+  category: Array<string>;
+  excerpt: string;
+}
+
+export function BlogCard({ post }: { post: BlogCardProps }) {
   return (
     <Card className="w-full max-w-sm">
       <CardHeader>
-        <CardTitle>Blog Post Title</CardTitle>
+        <CardTitle>{post.title}</CardTitle>
       </CardHeader>
       <CardContent>
-        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Magni
-        voluptatem animi, eveniet numquam suscipit accusantium fugit repudiandae
-        iusto quos, ad, ipsam laboriosam illo est non odio asperiores pariatur
-        fugiat voluptatibus.
+        <p>{post.excerpt}</p>
+        <div className="mt-4 flex flex-wrap gap-2">
+          {post.category.map((cat) => (
+            <span
+              key={cat}
+              className="rounded-full bg-gray-200 px-3 py-1  text-sm font-medium"
+            >
+              {cat}
+            </span>
+          ))}
+        </div>
       </CardContent>
       <CardFooter>
-        <button className="rounded-lg bg-primary text-primary-foreground px-4 py-2 font-medium cursor-pointer hover:bg-primary/90">
+        <button
+          onClick={() => {
+            window.location.href = `/blog/${post.slug}`;
+          }}
+          className="rounded-lg bg-primary text-primary-foreground px-4 py-2 font-medium cursor-pointer hover:bg-primary/90"
+        >
           View Post
         </button>
       </CardFooter>

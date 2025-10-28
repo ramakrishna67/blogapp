@@ -70,9 +70,10 @@ export function BlogForm() {
             className="w-full rounded-lg border border-input bg-background px-4 py-2 text-foreground placeholder-muted-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
           >
             <option value="">Select a category</option>
-            <option value="tech">Tech</option>
-            <option value="lifestyle">Lifestyle</option>
-            <option value="business">Business</option>
+            <option value="Technology">Technology</option>
+            <option value="Lifestyle">Lifestyle</option>
+            <option value="Education">Education</option>
+            <option value="Business">Business</option>
           </select>
         </div>
         <div className="space-y-2">
