@@ -31,7 +31,7 @@ export default function EditBlogPostPage() {
       setTitle(post.title);
       setContent(post.content);
       setExcerpt(post.excerpt);
-      setCategory((post.category ?? []).join(", "));
+      setCategory((post.categories ?? []).join(", "));
     }
   }, [post]);
 
@@ -44,7 +44,7 @@ export default function EditBlogPostPage() {
       title,
       content,
       excerpt,
-      category: category.split(",").map((c) => c.trim()),
+      categories: category.split(",").map((c) => c.trim()),
     });
   };
 

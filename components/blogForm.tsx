@@ -9,46 +9,57 @@ export function BlogForm() {
     title: "",
     slug: "",
     excerpt: "",
-    category: "",
+    categories: [] as string[], // ✅ now an array
     content: "",
   });
+
   const utils = trpc.useContext();
 
   const { mutate: createPost, isPending } = trpc.post.create.useMutation({
     onSuccess: () => {
       utils.post.getAll.invalidate();
-      toast.success(" Blog post created successfully!");
+      toast.success("Blog post created successfully!");
       setFormData({
         title: "",
         slug: "",
         excerpt: "",
-        category: "",
+        categories: [],
         content: "",
       });
     },
     onError: (err) => {
-      toast.error(` Failed to create blog: ${err.message}`);
+      toast.error(`Failed to create blog: ${err.message}`);
     },
   });
 
   const handleChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const selected = Array.from(
+      e.target.selectedOptions,
+      (option) => option.value
+    );
+    setFormData({ ...formData, categories: selected });
   };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    // Call tRPC mutation
+    if (formData.categories.length === 0) {
+      toast.error("Please select at least one category!");
+      return;
+    }
+
     createPost({
       title: formData.title,
       slug: formData.slug,
       excerpt: formData.excerpt,
       content: formData.content,
-      category: [formData.category], // convert to array
+      categories: formData.categories, // ✅ now directly array
       published: true,
     });
   };
@@ -76,7 +87,7 @@ export function BlogForm() {
             value={formData.title}
             onChange={handleChange}
             placeholder="Blog Title"
-            className="w-full rounded-lg border border-input bg-background px-4 py-2 text-foreground placeholder-muted-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+            className="w-full rounded-lg border border-input bg-background px-4 py-2"
           />
         </div>
 
@@ -96,7 +107,7 @@ export function BlogForm() {
             value={formData.slug}
             onChange={handleChange}
             placeholder="blog-slug-example"
-            className="w-full rounded-lg border border-input bg-background px-4 py-2 text-foreground placeholder-muted-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+            className="w-full rounded-lg border border-input bg-background px-4 py-2"
           />
         </div>
 
@@ -115,32 +126,37 @@ export function BlogForm() {
             value={formData.excerpt}
             onChange={handleChange}
             placeholder="A short summary of the blog post"
-            className="w-full rounded-lg border border-input bg-background px-4 py-2 text-foreground placeholder-muted-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+            className="w-full rounded-lg border border-input bg-background px-4 py-2"
           />
         </div>
 
-        {/* Category */}
+        {/* Categories (multi-select) */}
         <div className="space-y-2">
           <label
-            htmlFor="category"
+            htmlFor="categories"
             className="block text-sm font-medium text-foreground"
           >
-            Blog Category
+            Blog Categories (hold Ctrl/Cmd to select multiple)
           </label>
           <select
-            id="category"
-            name="category"
+            id="categories"
+            name="categories"
+            multiple
             required
-            value={formData.category}
-            onChange={handleChange}
-            className="w-full rounded-lg border border-input bg-background px-4 py-2 text-foreground placeholder-muted-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+            value={formData.categories}
+            onChange={handleCategoryChange}
+            className="w-full rounded-lg border border-input bg-background px-4 py-2 h-32"
           >
-            <option value="">Select a category</option>
             <option value="Technology">Technology</option>
             <option value="Lifestyle">Lifestyle</option>
             <option value="Education">Education</option>
             <option value="Business">Business</option>
+            <option value="AI">AI</option>
+            <option value="Health">Health</option>
           </select>
+          <p className="text-sm text-gray-500">
+            (Hold Ctrl or Cmd to select multiple)
+          </p>
         </div>
 
         {/* Content */}
@@ -158,7 +174,7 @@ export function BlogForm() {
             value={formData.content}
             onChange={handleChange}
             placeholder="Write your blog post content here"
-            className="w-full rounded-lg border border-input bg-background px-4 py-2 text-foreground placeholder-muted-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+            className="w-full rounded-lg border border-input bg-background px-4 py-2"
           />
         </div>
 
@@ -166,7 +182,7 @@ export function BlogForm() {
           <button
             type="submit"
             disabled={isPending}
-            className="rounded-lg bg-primary px-6 py-2 font-medium text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-50"
+            className="rounded-lg bg-primary px-6 py-2 text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
           >
             {isPending ? "Saving..." : "Save Blog"}
           </button>
@@ -177,11 +193,11 @@ export function BlogForm() {
                 title: "",
                 slug: "",
                 excerpt: "",
-                category: "",
+                categories: [],
                 content: "",
               })
             }
-            className="rounded-lg border border-input bg-background px-6 py-2 font-medium text-foreground transition-colors hover:bg-muted"
+            className="rounded-lg border border-input bg-background px-6 py-2 font-medium text-foreground"
           >
             Cancel
           </button>

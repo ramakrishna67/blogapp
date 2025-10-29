@@ -19,7 +19,6 @@ export const posts = pgTable("posts", {
   published: boolean("published").default(false).notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
-  category: json("category").$type<string[]>().default([]),
   excerpt: text("excerpt").notNull(),
 });
 
