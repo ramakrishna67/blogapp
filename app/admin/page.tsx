@@ -70,7 +70,7 @@ export default function AdminPosts() {
           {currentPosts.map((post) => (
             <BlogCard
               key={post.id}
-              post={{ ...post, category: post.category ?? [] }}
+              post={{ ...post, categories: post.categories ?? [] }}
             />
           ))}
         </div>
