@@ -2,6 +2,8 @@ import { notFound } from "next/navigation";
 import { createCaller } from "@/lib/trpc/server";
 import Link from "next/link";
 import { DeleteButton } from "@/components/deleteButton";
+import Markdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 export default async function BlogPostPage({
   params,
@@ -33,7 +35,7 @@ export default async function BlogPostPage({
           <hr className="border-t-2 border-black" />
           <h1 className="text-3xl font-bold mt-4 mb-2">{post.title}</h1>
           <article className="prose prose-lg text-foreground whitespace-pre-line leading-relaxed">
-            {post.content}
+            <Markdown remarkPlugins={[remarkGfm]}>{post.content}</Markdown>
           </article>
         </div>
       </div>

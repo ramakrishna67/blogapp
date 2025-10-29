@@ -23,6 +23,8 @@
     "postgres": "^3.4.7",
     "react": "19.2.0",
     "react-dom": "19.2.0",
+    "react-markdown": "^10.1.0",
+    "remark-gfm": "^4.0.1",
     "slugify": "^1.6.6",
     "sonner": "^2.0.7",
     "superjson": "^2.2.3",

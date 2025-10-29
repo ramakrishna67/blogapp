@@ -3,15 +3,19 @@
 import { useState } from "react";
 import { trpc } from "@/lib/trpc/client";
 import { toast } from "sonner";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 export function BlogForm() {
   const [formData, setFormData] = useState({
     title: "",
     slug: "",
     excerpt: "",
-    categories: [] as string[], // ✅ now an array
+    categories: [] as string[],
     content: "",
   });
+
+  const [showPreview, setShowPreview] = useState(false);
 
   const utils = trpc.useContext();
 
@@ -59,7 +63,7 @@ export function BlogForm() {
       slug: formData.slug,
       excerpt: formData.excerpt,
       content: formData.content,
-      categories: formData.categories, // ✅ now directly array
+      categories: formData.categories,
       published: true,
     });
   };
@@ -130,7 +134,7 @@ export function BlogForm() {
           />
         </div>
 
-        {/* Categories (multi-select) */}
+        {/* Categories */}
         <div className="space-y-2">
           <label
             htmlFor="categories"
@@ -159,25 +163,44 @@ export function BlogForm() {
           </p>
         </div>
 
-        {/* Content */}
+        {/* Markdown Content Editor */}
         <div className="space-y-2">
-          <label
-            htmlFor="content"
-            className="block text-sm font-medium text-foreground"
-          >
-            Blog Content
-          </label>
-          <textarea
-            id="content"
-            name="content"
-            required
-            value={formData.content}
-            onChange={handleChange}
-            placeholder="Write your blog post content here"
-            className="w-full rounded-lg border border-input bg-background px-4 py-2"
-          />
+          <div className="flex items-center justify-between">
+            <label
+              htmlFor="content"
+              className="block text-sm font-medium text-foreground"
+            >
+              Blog Content (Markdown Supported)
+            </label>
+            <button
+              type="button"
+              onClick={() => setShowPreview(!showPreview)}
+              className="text-sm text-blue-600 hover:underline"
+            >
+              {showPreview ? "Edit" : "Preview"}
+            </button>
+          </div>
+
+          {showPreview ? (
+            <div className="p-4 border rounded-lg bg-muted prose max-w-none">
+              <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                {formData.content || "*Nothing to preview yet.*"}
+              </ReactMarkdown>
+            </div>
+          ) : (
+            <textarea
+              id="content"
+              name="content"
+              required
+              value={formData.content}
+              onChange={handleChange}
+              placeholder="Write your post in Markdown..."
+              className="w-full h-60 rounded-lg border border-input bg-background px-4 py-2 font-mono"
+            />
+          )}
         </div>
 
+        {/* Buttons */}
         <div className="flex gap-3">
           <button
             type="submit"
